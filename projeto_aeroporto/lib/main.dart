@@ -34,7 +34,7 @@ void main() {
 
     listaCruzeiros.add(Cruzeiros((Icons.directions_boat), 9, "Santos", "Buenos Aires", "2.000,00", "27/07/2020"));
     listaCruzeiros.add(Cruzeiros((Icons.directions_boat), 10, "Rio de Janeiro", "Santos", "3.250,00", "27/08/2020"));
-    listaCruzeiros.add(Cruzeiros((Icons.directions_boat), 11, "Espiríto Santo", "Fernando de Norona", "1.860,00", "27/09/2020"));
+    listaCruzeiros.add(Cruzeiros((Icons.directions_boat), 11, "Espiríto Santo", "Fernando de Noronha", "1.860,00", "27/09/2020"));
     listaCruzeiros.add(Cruzeiros((Icons.directions_boat), 12, "Praia Grande", "Cancun", "2.750,50", "27/06/2020"));
 
     listaTodasPassagens.add(Passagem((Icons.local_activity), 1, 1, 1,"27/06/2020","Ribeirão Preto", "São Paulo", "1.250,00", "Paga"));

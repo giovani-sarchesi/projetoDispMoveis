@@ -22,20 +22,36 @@ verificarCadastro(String cpf, String nome, String email, String senha){
   var verificaCPF = clientes.firstWhere((cliente) => cliente.cpf == cpf, 
                                         orElse: () => null);
   if(cpf.isEmpty || nome.isEmpty || email.isEmpty || senha.isEmpty){
-    return alertInformativo(context, "Algo deu errado... :/", "Lembre-se, todos os dados são obrigatórios.", botaoIrCadastrar(context, new Botao((Icons.check_circle), "Voltar")));
+    return alertInformativo(context, 
+                            "Algo deu errado... :/", 
+                            "Lembre-se, todos os dados são obrigatórios.", 
+                            botaoFecharAlert(context, new Botao((Icons.check_circle), "Voltar")));
   } 
   if(verificaCPF != null){
-    return alertInformativo(context, "Ops...encontramos um problema :(","Já existe um usuário cadastrado com esse CPF.", botaoIrCadastrar(context, new Botao((Icons.check_circle), "Voltar")));
+    return alertConfirmativo(context, 
+                            "Ops...encontramos um problema :(",
+                            "Já existe um usuário cadastrado com esse CPF.", 
+                            botaoIrLogin(context, new Botao((Icons.input), "Logar")),
+                            botaoFecharAlert(context, new Botao((Icons.check_circle), "Voltar")));
   }
   if(cpf.length < 11){
-    return alertInformativo(context, "CPF informado é inválido.", "Informe um CPF válido para realizar o cadastro.", botaoIrCadastrar(context, new Botao((Icons.check_circle), "Voltar")));
+    return alertInformativo(context, 
+                            "CPF informado é inválido.", 
+                            "Informe um CPF válido para realizar o cadastro.", 
+                            botaoFecharAlert(context, new Botao((Icons.check_circle), "Voltar")));
   }  
   if(!email.contains('@')) {
-    return alertInformativo(context, "E-mail informado é inválido!", "Informe um e-mail válido para realizar o cadastro.", botaoIrCadastrar(context, new Botao((Icons.check_circle), "Voltar")));
+    return alertInformativo(context, 
+                           "E-mail informado é inválido!", 
+                           "Informe um e-mail válido para realizar o cadastro.", 
+                           botaoFecharAlert(context, new Botao((Icons.check_circle), "Voltar")));
   }      
 
   clientes.add(Cliente(clientes.length + 1, cpf, nome, email, senha));
-  alertInformativo(context, "Cadastro realizado com sucesso!", "Seja bem-vindo $nome, faça login para aproveitar nosso aplicativo!", botaoIrLogin(context, new Botao((Icons.check_circle), "Ir ao login.")));
+  alertInformativo(context, 
+                  "Cadastro realizado com sucesso!", 
+                  "Seja bem-vindo $nome, faça login para aproveitar nosso aplicativo!", 
+                  botaoIrLogin(context, new Botao((Icons.check_circle), "Ir ao login.")));
   limparCampos();
 }
 

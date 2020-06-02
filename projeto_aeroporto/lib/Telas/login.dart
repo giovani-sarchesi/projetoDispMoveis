@@ -18,27 +18,26 @@ void verificaLogin(String senha, String cpf){
     return alertInformativo(context, 
                             "Falha no login", 
                             "Informe usuário e senha para logar.",
-                            botaoIrLogin(context, new Botao((Icons.check_circle), "Voltar")));
+                            botaoFecharAlert(context, new Botao((Icons.check_circle), "Voltar")));
   }
 
   var verificaCPF = clientes.firstWhere((cliente) => cliente.cpf == cpf, 
                                         orElse: () => null);
 
   if(verificaCPF == null){
-    return alertInformativo(context, 
+    return alertConfirmativo(context, 
                             "Usuário não existe.",
                             "Retorne e confira os dados, caso não tenha cadastro mesmo, cadastre-se.",
-                            botaoIrLogin(context, new Botao((Icons.check_circle), "Voltar")));
+                            botaoIrCadastrar(context, new Botao((Icons.person_add), "Cadastrar")),
+                            botaoFecharAlert(context, new Botao((Icons.check_circle), "Voltar")));
   }
   if(verificaCPF.senha != senha){
     return alertInformativo(context, 
                             "", 
                             "Senha informada é incorreta.",
-                            botaoIrLogin(context, new Botao((Icons.check_circle), "Voltar")));
+                            botaoFecharAlert(context, new Botao((Icons.check_circle), "Voltar")));
   }    
-
-  txtCPF.clear();
-  txtSenha.clear();               
+     
   
   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MenuApp(
     idCliente: verificaCPF.id
