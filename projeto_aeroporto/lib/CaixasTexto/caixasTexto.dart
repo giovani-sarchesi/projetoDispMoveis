@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_shifter/mask_shifter.dart';
@@ -24,12 +25,6 @@ textoParaData(largura, altura, editavel, icone, label, controle){
         child: TextFormField(
         enabled: editavel,
         keyboardType: TextInputType.datetime,
-        inputFormatters: [
-        MaskedTextInputFormatterShifter(
-            maskONE: "XX/XX/XXXX",
-            maskTWO: "XX/XX/XXXX"
-          )
-        ],
         decoration: InputDecoration(
             prefixIcon: Icon(icone),
             border: OutlineInputBorder(),
@@ -181,3 +176,5 @@ bool visivel = false;
       );
   }
 }
+
+

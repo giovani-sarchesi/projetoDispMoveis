@@ -1,3 +1,4 @@
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto_aeroporto/Alerts/alerts.dart';
 import 'package:projeto_aeroporto/Botoes/botoes.dart';
@@ -30,7 +31,7 @@ class _DadosCartaoState extends State<DadosCartao> {
 
 verificarDados(String nomeCompleto, String nroCartao, String cvv, String validade){
 
-   if(nomeCompleto.isEmpty || nroCartao.isEmpty || cvv.isEmpty || validade.isEmpty){
+   if(nomeCompleto.isEmpty || nroCartao.isEmpty || cvv.isEmpty || validade.isEmpty || validade == "Validade"){
       return alertConfirmativo(context, 
                         "Dados incorretos",
                         "Todos os dados são obrigatórios!", 
@@ -67,7 +68,8 @@ TextEditingController nomeCompleto = TextEditingController();
 TextEditingController cpfTitular = TextEditingController();
 TextEditingController nroCartao = TextEditingController();
 TextEditingController cvv = TextEditingController();
-TextEditingController validade = TextEditingController();
+dynamic validade = "Validade";
+DateTime dataSelecionada = new DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -102,11 +104,40 @@ TextEditingController validade = TextEditingController();
                       textoNumerosSemIcone(55.0, 35.0, true, 3, "CVV", cvv),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 5),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      textoParaData(165.0, 35.0, true, (Icons.calendar_today), "Validade", validade),                  
+                      IconButton(
+                          icon: Icon(Icons.calendar_today,
+                                    color: Colors.grey),
+                          onPressed:() async {
+                              final calendario = await showDatePicker(
+                              context: context, 
+                              initialDate: DateTime.now(), 
+                              firstDate: DateTime.now(), 
+                              lastDate: DateTime(2100));
+
+                  if(calendario != null){
+                    setState(() {
+                      dataSelecionada = calendario;
+                      validade = '${formatDate(dataSelecionada, [dd, '/' , mm, '/', yyyy ])}';
+                    });
+                  }
+              }
+            ),
+          SizedBox(
+            height: 35,
+            width: 120,
+            child: TextFormField(
+            enabled: false,
+            decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: validade,
+            ),
+            ),
+          ), 
+          SizedBox(width: 12,),                
                   SizedBox(
                       height: 35,
                       width: 100,
@@ -116,7 +147,9 @@ TextEditingController validade = TextEditingController();
                           verificarDados(nomeCompleto.text, 
                                          nroCartao.text,
                                          cvv.text, 
-                                         validade.text);
+                                         validade.toString());
+
+                          debugPrint(validade.toString());
                           }, 
                         shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(1000.0),

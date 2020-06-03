@@ -53,7 +53,7 @@ void main() {
     runApp(MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'GK',
-          initialRoute: '/telaInicial',
+          initialRoute: '/compraPassagem',
           routes: {
             '/telaInicial': (context) => TelaInicial(), 
             '/login': (context) => Login(),
