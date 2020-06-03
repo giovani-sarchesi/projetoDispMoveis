@@ -29,16 +29,16 @@ class _BoletoState extends State<Boleto> {
 
 verificarDados(String email){
   if(!email.contains('@')){
-    return alertConfirmativo(context, 
+    return alertInformativo(context, 
                         "Dados incorretos",
                         "E-mail informado é inválido!", 
-                        botaoFecharAlert(context, new Botao((Icons.edit), "Editar dados")), 
-                        botaoIrMenu(context, new Botao((Icons.assignment_return), "Ir ao menu"), widget.idCliente));
+                        botaoFecharAlert(context, new Botao((Icons.edit), "Editar dados"))
+                        );
   }
   
    alertInformativo(context, 
-                   "Boleto enviado com sucesso!", 
-                   "Boleto enviado para o e-mail ${txtEmail.text}, após o pagamento sua passagem estará liberada.",
+                   "Boleto gerado com sucesso!", 
+                   "Boleto será enviado para o e-mail ${txtEmail.text}, após o pagamento sua passagem estará liberada.",
                    botaoIrMenu(context, new Botao((Icons.check_circle), "Ir ao menu"), widget.idCliente)
                   );
 

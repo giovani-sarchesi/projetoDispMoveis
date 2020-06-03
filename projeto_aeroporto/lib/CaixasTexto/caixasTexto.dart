@@ -46,7 +46,7 @@ textoParaCPF(altura, editavel, icone, label, controle){
         WhitelistingTextInputFormatter.digitsOnly,  
         MaskedTextInputFormatterShifter(
             maskONE: "XXX.XXX.XXX-XX",
-            maskTWO: "###.###.###-##"
+            maskTWO: "XX.XXX.XXX/XXXX-XX"
           )
         ],
         decoration: InputDecoration(

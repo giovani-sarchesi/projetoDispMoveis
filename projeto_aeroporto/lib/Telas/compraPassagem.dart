@@ -131,7 +131,10 @@ void verificarSelecionado(int index){
                       onPressed: (){
                          Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => MenuApp()));
+                                    MaterialPageRoute(builder: (context) => MenuApp(
+                                      idCliente: widget.idCliente,
+                                    ))
+                                    );
                       }, 
                       shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(1000.0),

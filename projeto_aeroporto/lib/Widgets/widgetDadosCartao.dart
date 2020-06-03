@@ -31,22 +31,30 @@ const DadosCartao({
 
 class _DadosCartaoState extends State<DadosCartao> {
 
-verificarDados(String nomeCompleto, String nroCartao, String cvv, String validade){
+verificarDados(String nomeCompleto, String cpfTitular, String nroCartao, String cvv, String validade){
 
    if(nomeCompleto.isEmpty || nroCartao.isEmpty || cvv.isEmpty || validade.isEmpty || validade == "Validade"){
-      return alertConfirmativo(context, 
+      return alertInformativo(context, 
                         "Dados incorretos",
                         "Todos os dados são obrigatórios!", 
-                        botaoFecharAlert(context, new Botao((Icons.edit), "Editar dados")), 
-                        botaoIrMenu(context, new Botao((Icons.assignment_return), "Ir ao menu"), widget.idCliente));
+                        botaoFecharAlert(context, new Botao((Icons.edit), "Editar dados"))
+                        );
    }
 
    if(nroCartao.length < 14){
-     return alertConfirmativo(context, 
+     return alertInformativo(context, 
                         "Dados incorretos",
                         "Cartão informado é inválido!", 
-                        botaoFecharAlert(context, new Botao((Icons.edit), "Editar dados")), 
-                        botaoIrMenu(context, new Botao((Icons.assignment_return), "Ir ao menu"), widget.idCliente));
+                        botaoFecharAlert(context, new Botao((Icons.edit), "Editar dados"))
+                        );
+   }
+
+   if(cpfTitular.length < 11){
+     return alertInformativo(context, 
+                        "Dados incorretos",
+                        "CPF informado é inválido!", 
+                        botaoFecharAlert(context, new Botao((Icons.edit), "Editar dados"))
+                        );
    }
    
    alertInformativo(context, 
@@ -70,8 +78,7 @@ TextEditingController nomeCompleto = TextEditingController();
 TextEditingController cpfTitular = TextEditingController();
 TextEditingController nroCartao = TextEditingController();
 TextEditingController cvv = TextEditingController();
-dynamic validade = "Validade";
-DateTime dataSelecionada = new DateTime.now();
+dynamic validade = "< Validade";
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +92,7 @@ DateTime dataSelecionada = new DateTime.now();
                               ),
                       borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   ),
+
                   child: Column(
                     children: [
                       Text("Dados do Cartão", 
@@ -108,7 +116,7 @@ DateTime dataSelecionada = new DateTime.now();
                   ),
                   SizedBox(height: 5),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
                           icon: Icon(Icons.calendar_today,
@@ -138,20 +146,18 @@ DateTime dataSelecionada = new DateTime.now();
                 labelText: validade,
             ),
             ),
-          ), 
-          SizedBox(width: 12,),                
-                  SizedBox(
+          ),
+                 SizedBox(
                       height: 35,
                       width: 100,
                       child: RaisedButton(
                         child: Text("Confirmar"),
                         onPressed: (){
-                          verificarDados(nomeCompleto.text, 
+                          verificarDados(nomeCompleto.text,
+                                         cpfTitular.text,
                                          nroCartao.text,
                                          cvv.text, 
                                          validade.toString());
-
-                          debugPrint(validade.toString());
                           }, 
                         shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(1000.0),

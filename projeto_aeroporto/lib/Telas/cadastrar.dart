@@ -63,6 +63,17 @@ verificarCadastro(String cpf, String nome, String email, String senha){
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+              preferredSize: Size.fromHeight(35),
+              child: AppBar(
+             backgroundColor: Colors.white,
+             title: Text("Cadastrar",
+                textAlign: TextAlign.start, 
+                textScaleFactor: 0.75,
+                style: TextStyle(
+                    color: Colors.lightBlue[300],) ),
+          ),
+      ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         padding: EdgeInsets.all(5),

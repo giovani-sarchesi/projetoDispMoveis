@@ -6,7 +6,6 @@ import 'package:projeto_aeroporto/Listas/listaCruzeiros.dart';
 import 'package:projeto_aeroporto/Listas/listaOnibus.dart';
 import 'package:projeto_aeroporto/Listas/listaPassagens.dart';
 import 'package:projeto_aeroporto/Listas/listaVoos.dart';
-import 'package:projeto_aeroporto/Telas/telaInicial.dart';
 import 'package:projeto_aeroporto/Widgets/widgetSelecione.dart';
 import 'package:projeto_aeroporto/main.dart';
 
@@ -50,7 +49,7 @@ verificaPassagens(){
             actions: [
               IconButton(icon: Icon(Icons.exit_to_app), 
                          onPressed: (){
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TelaInicial()));
+                          Navigator.pushNamedAndRemoveUntil(context, '/telaInicial', ModalRoute.withName('/'));
                          }
               ),
             ],

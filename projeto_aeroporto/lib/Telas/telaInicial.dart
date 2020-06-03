@@ -7,21 +7,22 @@ class TelaInicial extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      body: Container(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(5.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Image.asset('assets/imagens/logoGK.png', height: 300, width: 300),
-                botaoIrLogin(context, new Botao((Icons.check_circle), "Possuo conta"),),
-                SizedBox(height: 10,),
-                botaoIrCadastrar(context, new Botao((Icons.fiber_new), "Criar conta"),),
-                SizedBox(height: 10),
-                botaoIrSobre(context, new Botao((Icons.info_outline), "Sobre")),
-              ],
-            ),
-        )
+      body: Center(
+        child: Container(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(5.0),
+              child: Column(
+                children: <Widget>[
+                  Image.asset('assets/imagens/logoGK.png', height: 300, width: 300),
+                  botaoIrLogin(context, new Botao((Icons.check_circle), "Possuo conta"),),
+                  SizedBox(height: 10,),
+                  botaoIrCadastrar(context, new Botao((Icons.fiber_new), "Criar conta"),),
+                  SizedBox(height: 10),
+                  botaoIrSobre(context, new Botao((Icons.info_outline), "Sobre")),
+                ],
+              ),
+          )
+        ),
       )
     );
   }
