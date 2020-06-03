@@ -1,10 +1,10 @@
 # projeto_aeroporto
 
-A new Flutter project.
+Projeto da matéria Dispositivos Móveis.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+O projeto é um aplicativo de venda de passagens para viagens de avião, ônibus e cruzeiros.
 
 A few resources to get you started if this is your first Flutter project:
 
