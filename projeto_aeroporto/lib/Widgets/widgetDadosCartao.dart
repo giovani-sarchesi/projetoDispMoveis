@@ -1,10 +1,12 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:projeto_aeroporto/Alerts/alerts.dart';
 import 'package:projeto_aeroporto/Botoes/botoes.dart';
 import 'package:projeto_aeroporto/CaixasTexto/caixasTexto.dart';
 import 'package:projeto_aeroporto/Classes/classes.dart';
 import 'package:projeto_aeroporto/main.dart';
+import 'dart:ui';
 
 
 class DadosCartao extends StatefulWidget {
@@ -112,20 +114,20 @@ DateTime dataSelecionada = new DateTime.now();
                           icon: Icon(Icons.calendar_today,
                                     color: Colors.grey),
                           onPressed:() async {
-                              final calendario = await showDatePicker(
-                              context: context, 
-                              initialDate: DateTime.now(), 
-                              firstDate: DateTime.now(), 
-                              lastDate: DateTime(2100));
-
-                  if(calendario != null){
-                    setState(() {
-                      dataSelecionada = calendario;
-                      validade = '${formatDate(dataSelecionada, [dd, '/' , mm, '/', yyyy ])}';
-                    });
-                  }
-              }
-            ),
+                              DatePicker.showDatePicker(
+                              context,
+                              showTitleActions: true, 
+                              minTime: DateTime.now(), 
+                              maxTime: DateTime(2100),
+                              locale: LocaleType.pt,
+                              onConfirm: (date){
+                                setState(() {
+                                  validade = '${formatDate(date, [mm, '/', yyyy ])}';
+                                });
+                              },
+                            );                
+                        }
+                      ),
           SizedBox(
             height: 35,
             width: 120,

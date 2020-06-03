@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:projeto_aeroporto/Classes/classes.dart';
 import 'package:projeto_aeroporto/Telas/cadastrar.dart';
 import 'package:projeto_aeroporto/Telas/compraPassagem.dart';
@@ -51,9 +52,15 @@ void main() {
     clientes.add(Cliente(3, "33333333333", "Cliente Três", "cliente3@gmail.com", "cliente3"));
 
     runApp(MaterialApp(
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate
+          ],
+          supportedLocales: [const Locale('pt', 'BR')],
           debugShowCheckedModeBanner: false,
           title: 'GK',
-          initialRoute: '/compraPassagem',
+          initialRoute: '/telaInicial',
           routes: {
             '/telaInicial': (context) => TelaInicial(), 
             '/login': (context) => Login(),
