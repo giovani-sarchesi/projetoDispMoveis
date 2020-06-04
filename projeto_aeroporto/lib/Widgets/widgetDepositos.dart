@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_aeroporto/Alerts/alerts.dart';
-import 'package:projeto_aeroporto/Botoes/botoes.dart';
 import 'package:projeto_aeroporto/Classes/classes.dart';
+import 'package:projeto_aeroporto/Telas/confirmaCompra.dart';
 import 'package:projeto_aeroporto/main.dart';
 
 class Deposito extends StatefulWidget {
@@ -28,12 +27,6 @@ const Deposito({
 class _DepositoState extends State<Deposito> {
 
 comprarPassagem(){
-  alertInformativo(context, 
-                   "Pedido realizado com sucesso.", 
-                   "Assim que recebermos seu depósito sua passagem ficará disponível!",
-                   botaoIrMenu(context, new Botao((Icons.check_circle), "Ir ao menu"), widget.idCliente)
-                  );
-
   listaTodasPassagens.add(Passagem((Icons.local_activity),
                                   listaTodasPassagens.length + 1,
                                   widget.idCliente,
@@ -43,6 +36,13 @@ comprarPassagem(){
                                   widget.destino,
                                   widget.valor,
                                   "Aguardando depósito"));
+
+  Navigator.push(context, 
+                MaterialPageRoute(builder: (context) => ConfirmaCompra(idCliente: widget.idCliente,
+                                                                       mensagem: "Pedido gerado, quando recebermos seu depósito sua passagem será liberada! Obrigado pela preferência."
+                                                                      )
+                                 )
+                );
 }
 
   @override

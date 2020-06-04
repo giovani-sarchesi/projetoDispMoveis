@@ -39,7 +39,7 @@ void verificaLogin(String senha, String cpf){
   }    
      
   
-  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MenuApp(
+  Navigator.push(context, MaterialPageRoute(builder: (context) => MenuApp(
     idCliente: verificaCPF.id
   )));
   

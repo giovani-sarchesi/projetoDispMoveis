@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:projeto_aeroporto/Classes/classes.dart';
 import 'package:projeto_aeroporto/Telas/cadastrar.dart';
 import 'package:projeto_aeroporto/Telas/compraPassagem.dart';
+import 'package:projeto_aeroporto/Telas/confirmaCompra.dart';
 import 'package:projeto_aeroporto/Telas/login.dart';
 import 'package:projeto_aeroporto/Telas/menuApp.dart';
 import 'package:projeto_aeroporto/Telas/sobre.dart';
@@ -27,6 +28,7 @@ void main() {
     listaVoos.add(Voo((Icons.flight_takeoff), 14, "Ribeirão Preto", "Recife", "2.330,00", "18/09/2020"));
     listaVoos.add(Voo((Icons.flight_takeoff), 15, "Ribeirão Preto", "Santa Catarina", "1.650,99", "27/09/2020"));
     listaVoos.add(Voo((Icons.flight_takeoff), 16, "Ribeirão Preto", "Brasília", "1.900,50", "14/8/2020"));
+    listaVoos.add(Voo((Icons.flight_takeoff), 17, "Ribeirão Preto", "Gramado", "1.758,50", "14/8/2020"));
 
     listaOnibus.add(Onibus((Icons.directions_bus), 5, "Ribeirão Preto", "São Paulo", "100,00", "27/07/2020"));
     listaOnibus.add(Onibus((Icons.directions_bus), 6, "Ribeirão Preto", "Santos", "115,00", "10/06/2020"));
@@ -68,6 +70,7 @@ void main() {
             '/menuApp': (context) => MenuApp(),
             '/compraPassagem': (context) => ComprarPassagem(),
             '/sobre': (context) => Sobre(),
+            '/confirmaCompra': (context) => ConfirmaCompra(),
           },
         ));
 }

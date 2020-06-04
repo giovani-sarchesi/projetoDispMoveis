@@ -1,10 +1,9 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:projeto_aeroporto/Alerts/alerts.dart';
-import 'package:projeto_aeroporto/Botoes/botoes.dart';
 import 'package:projeto_aeroporto/CaixasTexto/caixasTexto.dart';
 import 'package:projeto_aeroporto/Classes/classes.dart';
+import 'package:projeto_aeroporto/Telas/confirmaCompra.dart';
 import 'package:projeto_aeroporto/main.dart';
 import 'dart:ui';
 
@@ -34,35 +33,43 @@ class _DadosCartaoState extends State<DadosCartao> {
 verificarDados(String nomeCompleto, String cpfTitular, String nroCartao, String cvv, String validade){
 
    if(nomeCompleto.isEmpty || nroCartao.isEmpty || cvv.isEmpty || validade.isEmpty || validade == "Validade"){
-      return alertInformativo(context, 
-                        "Dados incorretos",
-                        "Todos os dados são obrigatórios!", 
-                        botaoFecharAlert(context, new Botao((Icons.edit), "Editar dados"))
-                        );
+      return setState(() {
+        textoInfoCartao = "Todos os dados são obrigatórios";
+        iconeInfoCartao = (Icons.warning);
+        corInfoCartao = Colors.red;        
+        liberaBotao = true;
+      });
    }
 
    if(nroCartao.length < 14){
-     return alertInformativo(context, 
-                        "Dados incorretos",
-                        "Cartão informado é inválido!", 
-                        botaoFecharAlert(context, new Botao((Icons.edit), "Editar dados"))
-                        );
+     return setState(() {
+        textoInfoCartao = "Cartão informado é inválido";
+        iconeInfoCartao = (Icons.warning);
+        corInfoCartao = Colors.red;        
+        liberaBotao = true;
+      });
    }
 
    if(cpfTitular.length < 11){
-     return alertInformativo(context, 
-                        "Dados incorretos",
-                        "CPF informado é inválido!", 
-                        botaoFecharAlert(context, new Botao((Icons.edit), "Editar dados"))
-                        );
+     return setState(() {
+        textoInfoCartao = "CPF informado é inválido";
+        iconeInfoCartao = (Icons.warning);
+        corInfoCartao = Colors.red;
+        liberaBotao = true;
+      });
    }
    
-   alertInformativo(context, 
-                   "Compra realizada com sucesso!", 
-                   "Obrigado pela preferência :D",
-                   botaoIrMenu(context, new Botao((Icons.check_circle), "Ir ao menu"), widget.idCliente)
-                  );
+  setState(() {
+        textoInfoCartao = "Sucesso, a compra pode ser realizada";
+        iconeInfoCartao = (Icons.verified_user);
+        corInfoCartao = Colors.lightGreen;
+        liberaBotao = !liberaBotao;
+      });
 
+  
+}
+
+confirmarCompra(){
   listaTodasPassagens.add(Passagem((Icons.local_activity),
                                   listaTodasPassagens.length + 1,
                                   widget.idCliente,
@@ -72,6 +79,13 @@ verificarDados(String nomeCompleto, String cpfTitular, String nroCartao, String 
                                   widget.destino,
                                   widget.valor,
                                   "Paga"));
+
+  Navigator.push(context, 
+                MaterialPageRoute(builder: (context) => ConfirmaCompra(idCliente: widget.idCliente,
+                                                                       mensagem: "Compra realizada com sucesso! Obrigado pela preferência."
+                                                                      )
+                                 )
+                );
 }
 
 TextEditingController nomeCompleto = TextEditingController();
@@ -79,6 +93,10 @@ TextEditingController cpfTitular = TextEditingController();
 TextEditingController nroCartao = TextEditingController();
 TextEditingController cvv = TextEditingController();
 dynamic validade = "< Validade";
+dynamic iconeInfoCartao = (Icons.info);
+dynamic textoInfoCartao = "Informe os dados do cartão";
+dynamic corInfoCartao = Colors.grey;
+bool liberaBotao = true;
 
   @override
   Widget build(BuildContext context) {
@@ -136,39 +154,78 @@ dynamic validade = "< Validade";
                             );                
                         }
                       ),
-          SizedBox(
-            height: 35,
-            width: 120,
-            child: TextFormField(
-            enabled: false,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: validade,
-            ),
-            ),
-          ),
-                 SizedBox(
+                    SizedBox(
+                      height: 35,
+                      width: 120,
+                      child: TextFormField(
+                        enabled: false,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: validade,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
                       height: 35,
                       width: 100,
                       child: RaisedButton(
-                        child: Text("Confirmar"),
-                        onPressed: (){
-                          verificarDados(nomeCompleto.text,
-                                         cpfTitular.text,
-                                         nroCartao.text,
-                                         cvv.text, 
-                                         validade.toString());
+                        
+                        child: Text("Verificar"),
+                        onPressed: (){ verificarDados(nomeCompleto.text,
+                                      cpfTitular.text,
+                                      nroCartao.text,
+                                      cvv.text, 
+                                      validade.toString());
                           }, 
-                        shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(1000.0),
+                          shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(1000.0),
+                          ),
+                          color: Colors.lightBlue[300],
                         ),
-                        color: Colors.lightBlue[300],
                       ),
+                    ],
                   ),
+                  SizedBox(height: 8,),
+                  Container(
+                    height: 35,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color:corInfoCartao,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(iconeInfoCartao,
+                            color: corInfoCartao,
+                            ),
+                        Text(textoInfoCartao,
+                            style: TextStyle(
+                              color: corInfoCartao,
+                            ),
+                        ),
+                    ],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  SizedBox(
+                              height: 25,
+                              width: 150,
+                              child: RaisedButton(
+                                child: Text("Confirmar Compra"),
+                                onPressed: liberaBotao ? null : (){
+                                    confirmarCompra();
+                                }, 
+                                shape: new RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(1000.0),
+                                ),
+                                color: Colors.lightBlue[300],
+                              ),
+                            ),
                 ],
-               )
-              ],
-            ),
+              ),
     );
   }
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto_aeroporto/Classes/classes.dart';
+import 'package:projeto_aeroporto/Telas/cadastrar.dart';
+import 'package:projeto_aeroporto/Telas/login.dart';
 import 'package:projeto_aeroporto/Telas/menuApp.dart';
+import 'package:projeto_aeroporto/Telas/telaInicial.dart';
 
 botaoIrLogin(BuildContext context, Botao botao){
     return SizedBox(
@@ -10,8 +13,8 @@ botaoIrLogin(BuildContext context, Botao botao){
             child: RaisedButton.icon(
                 icon: Icon(botao.icone , size: 17.5),
                 onPressed: (){
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/login');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Login()
+                  ));
                 },
                 label: Text(botao.label, textScaleFactor: 0.75,),
                 shape: new RoundedRectangleBorder(
@@ -28,8 +31,8 @@ botaoIrCadastrar(BuildContext context, Botao botao){
          width: 120,
           child: RaisedButton.icon(
                 onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.pushNamed(context, '/cadastrar');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Cadastrar()
+                  ));
                 },
                 icon: Icon(botao.icone, size: 17.5), 
                 label:Text(botao.label, textScaleFactor: 0.75,),
@@ -65,8 +68,8 @@ botaoTelaInicial(BuildContext context, Botao botao){
          width: 120,
           child: RaisedButton.icon(
                 onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.pushNamed(context, '/telaInicial');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => TelaInicial()
+                  ));
                 },
                 icon: Icon(botao.icone, size: 17.5), 
                 label:Text(botao.label, textScaleFactor: 0.75,),

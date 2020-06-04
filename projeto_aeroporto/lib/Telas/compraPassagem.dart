@@ -32,7 +32,7 @@ class _ComprarPassagemState extends State<ComprarPassagem> {
   
   int _indexAtual = 0;
   Widget atual = Selecione(texto: "Selecione uma forma de\npagamento no menu abaixo.", 
-                          icone: (Icons.arrow_downward));
+                          icone: (Icons.expand_more));
   TextEditingController origem = TextEditingController();
   TextEditingController destino = TextEditingController();
   TextEditingController data = TextEditingController();

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_aeroporto/Alerts/alerts.dart';
-import 'package:projeto_aeroporto/Botoes/botoes.dart';
 import 'package:projeto_aeroporto/CaixasTexto/caixasTexto.dart';
 import 'package:projeto_aeroporto/Classes/classes.dart';
+import 'package:projeto_aeroporto/Telas/confirmaCompra.dart';
 import 'package:projeto_aeroporto/main.dart';
 
 class Boleto extends StatefulWidget {
@@ -28,19 +27,21 @@ const Boleto({
 class _BoletoState extends State<Boleto> {
 
 verificarDados(String email){
-  if(!email.contains('@')){
-    return alertInformativo(context, 
-                        "Dados incorretos",
-                        "E-mail informado é inválido!", 
-                        botaoFecharAlert(context, new Botao((Icons.edit), "Editar dados"))
-                        );
+  if(email.isEmpty){
+    return setState(() {
+      corAviso = Colors.red;
+      textoAviso = "E-mail é obrigatório.";
+     }
+    );
   }
-  
-   alertInformativo(context, 
-                   "Boleto gerado com sucesso!", 
-                   "Boleto será enviado para o e-mail ${txtEmail.text}, após o pagamento sua passagem estará liberada.",
-                   botaoIrMenu(context, new Botao((Icons.check_circle), "Ir ao menu"), widget.idCliente)
-                  );
+
+  if(!email.contains('@')){
+    return setState(() {
+      corAviso = Colors.red;
+      textoAviso = "E-mail inválido.";
+     }
+    );
+  }
 
   listaTodasPassagens.add(Passagem((Icons.local_activity),
                                   listaTodasPassagens.length + 1,
@@ -51,9 +52,17 @@ verificarDados(String email){
                                   widget.destino,
                                   widget.valor,
                                   "Aguardando pagamento boleto"));
+
+  Navigator.push(context, 
+                MaterialPageRoute(builder: (context) => ConfirmaCompra(idCliente: widget.idCliente,
+                                                                       mensagem: "Boleto gerado e enviado para o e-mail $email, após identificarmos seu pagamento sua passagem será liberada! Obrigado pela preferência."
+                                                                      )
+                                 )
+                );
 }
   TextEditingController txtEmail = TextEditingController();
-
+  dynamic corAviso = Colors.white;
+  dynamic textoAviso = "Vazio";
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -79,20 +88,49 @@ verificarDados(String email){
                         SizedBox(height: 8),
                         textoParaEmail(35.0, true, (Icons.email), "E-mail para envio", txtEmail),
                         SizedBox(height: 8),
-                        SizedBox(
-                        height: 25,
-                        width: 120,
-                        child: RaisedButton(
-                          child: Text("Enviar Boleto"),
-                          onPressed: (){
-                            verificarDados(txtEmail.text);
-                          }, 
-                          shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(1000.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              height: 35,
+                              width: 165,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color:corAviso,
+                                ),
+                                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.warning,
+                                    color: corAviso,
+                                    ),
+                                Text(textoAviso,
+                                    style: TextStyle(
+                                      color: corAviso,
+                                    ),
+                                ),
+                            ],
                           ),
-                          color: Colors.lightBlue[300],
                         ),
-                        ),
+                            SizedBox(
+                              height: 25,
+                              width: 90,
+                              child: RaisedButton(
+                                child: Text("Enviar"),
+                                onPressed: (){
+                                  verificarDados(txtEmail.text);
+                                }, 
+                                shape: new RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(1000.0),
+                                ),
+                                color: Colors.lightBlue[300],
+                              ),
+                            ),
+                          ],
+                        ),                        
                       ]
                     )
       ),

@@ -6,6 +6,7 @@ import 'package:projeto_aeroporto/Listas/listaCruzeiros.dart';
 import 'package:projeto_aeroporto/Listas/listaOnibus.dart';
 import 'package:projeto_aeroporto/Listas/listaPassagens.dart';
 import 'package:projeto_aeroporto/Listas/listaVoos.dart';
+import 'package:projeto_aeroporto/Telas/telaInicial.dart';
 import 'package:projeto_aeroporto/Widgets/widgetSelecione.dart';
 import 'package:projeto_aeroporto/main.dart';
 
@@ -22,7 +23,7 @@ const MenuApp({
 class _MenuAppState extends State<MenuApp> {
 
 Widget lista = Selecione(texto: "Selecione uma das opções no menu acima.", 
-                          icone: (Icons.arrow_upward));
+                          icone: (Icons.expand_less));
 
 verificaPassagens(){
   if(listaPassagensUsuario.length == 0){
@@ -49,7 +50,9 @@ verificaPassagens(){
             actions: [
               IconButton(icon: Icon(Icons.exit_to_app), 
                          onPressed: (){
-                          Navigator.pushNamedAndRemoveUntil(context, '/telaInicial', ModalRoute.withName('/'));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => TelaInicial()
+                                                                               )
+                                                    );
                          }
               ),
             ],
@@ -124,7 +127,7 @@ verificaPassagens(){
                      onPressed: (){setState(() {
                        verificaPassagens();
                      });},
-                     icon: Icon(Icons.collections_bookmark, size: 30), 
+                     icon: Icon(Icons.style, size: 30), 
                      label:Text('Minhas\nPassagens', textScaleFactor: 0.75,),
                      shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(1000.0),
