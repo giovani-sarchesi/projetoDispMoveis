@@ -12,6 +12,7 @@ const Boleto({
     this.origem, 
     this.destino, 
     this.valor,
+    this.tipo,
  });
 
    final int idCliente;
@@ -20,6 +21,7 @@ const Boleto({
    final String origem;
    final String destino;
    final String valor;
+   final String tipo;
   @override
   _BoletoState createState() => _BoletoState();
 }
@@ -43,7 +45,7 @@ verificarDados(String email){
     );
   }
 
-  listaTodasPassagens.add(Passagem((Icons.local_activity),
+  listaTodasPassagens.add(Passagem((Icons.assignment_late),
                                   listaTodasPassagens.length + 1,
                                   widget.idCliente,
                                   widget.idViagem,
@@ -51,7 +53,8 @@ verificarDados(String email){
                                   widget.origem,
                                   widget.destino,
                                   widget.valor,
-                                  "Aguardando pagamento boleto"));
+                                  "Aguardando pagamento boleto",
+                                  widget.tipo));
 
   Navigator.push(context, 
                 MaterialPageRoute(builder: (context) => ConfirmaCompra(idCliente: widget.idCliente,

@@ -14,19 +14,172 @@ const ConfirmaCompra({
 }
 
 class _ConfirmaCompraState extends State<ConfirmaCompra> {
-  dynamic tamanhoIcon = 250.0;
+animaIcone(){
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 200), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 300), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 400), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 500), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 600), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 700), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 800), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 900), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 1000), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 1100), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 1200), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 1300), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 1400), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 1500), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 1600), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 1700), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 1800), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 1900), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 2000), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 2100), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 2200), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 2300), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 2400), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 2500), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 2600), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 2700), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 2800), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 2900), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 3000), () {
+      setState(() {
+        tamanhoIcon = tamanhoIcon + 10.0;
+      });
+    });
+}
+
+  dynamic tamanhoIcon = 0.0;
   dynamic corTexto = Colors.white;
   dynamic corAguarda = Colors.lightBlue[300];
 
 @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 5), () {
-  // 5s over, navigate to a new page
-    setState(() {
-      corAguarda = corTexto;
+    animaIcone();
+    Future.delayed(Duration(seconds: 4), () {
+      setState(() {
+        corAguarda = corTexto;
+      });
     });
-  });
 }
 
   @override
@@ -42,7 +195,7 @@ class _ConfirmaCompraState extends State<ConfirmaCompra> {
                 color: Colors.white,
                 ),
             Text(widget.mensagem,
-                style: TextStyle(color: Colors.white,
+                style: TextStyle(color: corAguarda,
                                 fontWeight: FontWeight.bold
                                 ),
                       textScaleFactor: 1.5,
@@ -51,7 +204,9 @@ class _ConfirmaCompraState extends State<ConfirmaCompra> {
             IconButton(icon: Icon(Icons.arrow_forward_ios,
                                   color: corAguarda,), 
                        onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => MenuApp(idCliente: widget.idCliente,)));
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MenuApp(idCliente: widget.idCliente)),
+                                                      ModalRoute.withName('/')
+                                                      );
                        })
         ]),
       ),

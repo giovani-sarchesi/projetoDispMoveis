@@ -11,6 +11,7 @@ const Deposito({
   this.origem, 
   this.destino, 
   this.valor,
+  this.tipo
  });
 
    final int idCliente;
@@ -19,6 +20,7 @@ const Deposito({
    final String origem;
    final String destino;
    final String valor;
+   final String tipo;
 
   @override
   _DepositoState createState() => _DepositoState();
@@ -27,7 +29,7 @@ const Deposito({
 class _DepositoState extends State<Deposito> {
 
 comprarPassagem(){
-  listaTodasPassagens.add(Passagem((Icons.local_activity),
+  listaTodasPassagens.add(Passagem((Icons.assignment_late),
                                   listaTodasPassagens.length + 1,
                                   widget.idCliente,
                                   widget.idViagem,
@@ -35,7 +37,8 @@ comprarPassagem(){
                                   widget.origem,
                                   widget.destino,
                                   widget.valor,
-                                  "Aguardando depósito"));
+                                  "Aguardando depósito",
+                                  widget.tipo));
 
   Navigator.push(context, 
                 MaterialPageRoute(builder: (context) => ConfirmaCompra(idCliente: widget.idCliente,

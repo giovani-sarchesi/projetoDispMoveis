@@ -16,6 +16,7 @@ const DadosCartao({
     this.origem, 
     this.destino, 
     this.valor,
+    this.tipo
  });
 
    final int idCliente;
@@ -24,6 +25,7 @@ const DadosCartao({
    final String origem;
    final String destino;
    final String valor;
+   final String tipo;
   @override
   _DadosCartaoState createState() => _DadosCartaoState();
 }
@@ -70,7 +72,7 @@ verificarDados(String nomeCompleto, String cpfTitular, String nroCartao, String 
 }
 
 confirmarCompra(){
-  listaTodasPassagens.add(Passagem((Icons.local_activity),
+  listaTodasPassagens.add(Passagem((Icons.assignment_turned_in),
                                   listaTodasPassagens.length + 1,
                                   widget.idCliente,
                                   widget.idViagem,
@@ -78,7 +80,8 @@ confirmarCompra(){
                                   widget.origem,
                                   widget.destino,
                                   widget.valor,
-                                  "Paga"));
+                                  "Paga",
+                                  widget.tipo));
 
   Navigator.push(context, 
                 MaterialPageRoute(builder: (context) => ConfirmaCompra(idCliente: widget.idCliente,
@@ -92,7 +95,7 @@ TextEditingController nomeCompleto = TextEditingController();
 TextEditingController cpfTitular = TextEditingController();
 TextEditingController nroCartao = TextEditingController();
 TextEditingController cvv = TextEditingController();
-dynamic validade = "< Validade";
+dynamic validade = "Validade";
 dynamic iconeInfoCartao = (Icons.info);
 dynamic textoInfoCartao = "Informe os dados do cartão";
 dynamic corInfoCartao = Colors.grey;
@@ -110,7 +113,6 @@ bool liberaBotao = true;
                               ),
                       borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   ),
-
                   child: Column(
                     children: [
                       Text("Dados do Cartão", 
@@ -154,7 +156,7 @@ bool liberaBotao = true;
                             );                
                         }
                       ),
-                    SizedBox(
+                      SizedBox(
                       height: 35,
                       width: 120,
                       child: TextFormField(
@@ -171,7 +173,7 @@ bool liberaBotao = true;
                       child: RaisedButton(
                         
                         child: Text("Verificar"),
-                        onPressed: (){ verificarDados(nomeCompleto.text,
+                        onPressed: (){verificarDados(nomeCompleto.text,
                                       cpfTitular.text,
                                       nroCartao.text,
                                       cvv.text, 
@@ -185,7 +187,7 @@ bool liberaBotao = true;
                       ),
                     ],
                   ),
-                  SizedBox(height: 8,),
+                  SizedBox(height: 8),
                   Container(
                     height: 35,
                     decoration: BoxDecoration(

@@ -18,14 +18,14 @@ class SobreGiovani extends StatelessWidget {
           child: SingleChildScrollView(
               child: Padding(
               padding: const EdgeInsets.all(2.0),
-              child: Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Column(
                     children: [
                       Container(
-                        width: 120,
-                        height: 120,
+                        width: 150,
+                        height: 150,
                         margin: EdgeInsets.all(2.0),
                         padding: EdgeInsets.all(2.0),
                         decoration: BoxDecoration(
@@ -59,19 +59,19 @@ class SobreGiovani extends StatelessWidget {
                                           fontWeight: FontWeight.bold),
                           ),
                       SizedBox(height: 5),
-                      textoParaSobre(25.0, 165.0, (Icons.filter_1), "Login"),
+                      textoParaSobre(25.0, 300.0, (Icons.filter_1), "Login"),
                       SizedBox(height: 5),
-                      textoParaSobre(25.0, 165.0, (Icons.filter_2), "Cadastrar"),
+                      textoParaSobre(25.0, 300.0, (Icons.filter_2), "Menu"),
                       SizedBox(height: 5),
-                      textoParaSobre(25.0, 165.0, (Icons.filter_3), "Pagamento"),
+                      textoParaSobre(25.0, 300.0, (Icons.filter_3), "Pagamento"),
                       SizedBox(height: 5),
-                      textoParaSobre(25.0, 165.0, (Icons.filter_4), "Listas"),
+                      textoParaSobre(25.0, 300.0, (Icons.filter_4), "Listas"),
                       SizedBox(height: 5),
-                      textoParaSobre(25.0, 165.0, (Icons.filter_5), "Sobre"),
+                      textoParaSobre(25.0, 300.0, (Icons.filter_5), "Sobre"),
                       SizedBox(height: 5),
-                      textoParaSobre(25.0, 165.0, (Icons.filter_6), "Widgets"),
+                      textoParaSobre(25.0, 300.0, (Icons.filter_6), "Widgets"),
                       SizedBox(height: 5),
-                      textoParaSobre(25.0, 165.0, (Icons.filter_7), "Confirma Compra"),
+                      textoParaSobre(25.0, 300.0, (Icons.filter_7), "Confirma Compra"),
                     ],
                   ),
                 ],

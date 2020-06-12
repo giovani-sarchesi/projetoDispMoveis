@@ -24,6 +24,20 @@ Widget _listaPassagens(context, index){
       return Colors.red;
     }
   }
+
+  iconeTipo(String tipo){
+    switch (tipo) {
+      case "Voo":
+        return Icons.flight_takeoff;
+        break;
+      case "Onibus":
+        return Icons.directions_bus;
+        break;
+      case "Cruzeiro":
+        return Icons.directions_boat;
+        break;
+    }
+  }
   return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Container(
@@ -39,18 +53,21 @@ Widget _listaPassagens(context, index){
         child: ListTile(
           leading: Icon(listaPassagensUsuario[index].icone, 
                         color: corIcone(listaPassagensUsuario[index].status), 
-                        size: 65),
+                        size: 55),
 
           title: Text(
             'Número passagem: ${listaPassagensUsuario[index].idPassagem}\nData: ${listaPassagensUsuario[index].data}',
             style: TextStyle(fontWeight: FontWeight.bold, 
-                             fontSize: 12),
+                             fontSize: 18),
                  ),
 
           subtitle: Text('Origem: ${listaPassagensUsuario[index].origem}\nDestino: ${listaPassagensUsuario[index].destino}\nStatus: ${listaPassagensUsuario[index].status}',
               style: TextStyle(fontWeight: FontWeight.bold, 
-                               fontSize: 10)
+                               fontSize: 14)
                     ),
+
+          trailing: Icon(iconeTipo(listaPassagensUsuario[index].tipo),
+                        size: 50,),
           ),
         ),
     );

@@ -1,54 +1,22 @@
-//Declaração classesssss
-class Voo{
+//Declaração classes
+class Viagens{
   var icone;
-  final int nroVoo;
+  final int idViagem;
   final String origem;
   final String destino;
   final String valor;
   final String data;
-
-
-  Voo(this.icone, 
-      this.nroVoo, 
+  final String tipoViagem;
+  
+  Viagens(this.icone, 
+      this.idViagem, 
       this.origem, 
       this.destino, 
       this.valor, 
-      this.data);  
+      this.data,
+      this.tipoViagem);  
 }
 
-class Onibus{
-  var icone;
-  final int nroViagem;
-  final String origem;
-  final String destino;
-  final String valor;
-  final String data;
-
-
-  Onibus(this.icone, 
-         this.nroViagem, 
-         this.origem, 
-         this.destino, 
-         this.valor, 
-         this.data);
-}
-
-class Cruzeiros{
-  var icone;
-  final int nroCruzeiro;
-  final String origem;
-  final String destino;
-  final String valor;
-  final String data;
-
-
-  Cruzeiros(this.icone, 
-            this.nroCruzeiro, 
-            this.origem, 
-            this.destino, 
-            this.valor, 
-            this.data);
-}
 
 class Cliente{
   final int id;
@@ -82,6 +50,7 @@ class Passagem{
    final String destino;
    final String valor;
    final String status;
+   final String tipo;
 
    Passagem(this.icone,
             this.idPassagem, 
@@ -91,6 +60,27 @@ class Passagem{
             this.origem, 
             this.destino, 
             this.valor,
-            this.status);
+            this.status,
+            this.tipo);
 }
 
+class Lugares{
+  final String nomeCidade;
+  var fotoCidade;
+  final String local;
+  final String descricao;
+  var fotoLocal;
+  final String local2;
+  final String descricao2;
+  var fotoLocal2;
+
+  Lugares(this.nomeCidade,
+          this.fotoCidade,
+          this.local,
+          this.descricao,
+          this.fotoLocal,
+          this.local2,
+          this.descricao2,
+          this.fotoLocal2
+  );
+}

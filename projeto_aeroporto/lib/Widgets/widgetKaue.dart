@@ -18,14 +18,14 @@ class SobreKaue extends StatelessWidget {
           child: SingleChildScrollView(
               child: Padding(
               padding: const EdgeInsets.all(2.0),
-              child: Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Column(
                     children: [
                       Container(
-                        width: 120,
-                        height: 120,
+                        width: 150,
+                        height: 150,
                         margin: EdgeInsets.all(2.0),
                         padding: EdgeInsets.all(2.0),
                         decoration: BoxDecoration(
@@ -59,17 +59,17 @@ class SobreKaue extends StatelessWidget {
                                           fontWeight: FontWeight.bold),
                           ),
                       SizedBox(height: 5),
-                      textoParaSobre(25.0, 165.0, (Icons.filter_1), "Inicial"),
+                      textoParaSobre(25.0, 300.0, (Icons.filter_1), "Inicial"),
                       SizedBox(height: 5),
-                      textoParaSobre(25.0, 165.0, (Icons.filter_2), "Menu"),
+                      textoParaSobre(25.0, 300.0, (Icons.filter_2), "Cadastrar"),
                       SizedBox(height: 5),
-                      textoParaSobre(25.0, 165.0, (Icons.filter_3), "Classes"),
+                      textoParaSobre(25.0, 300.0, (Icons.filter_3), "Classes"),
                       SizedBox(height: 5),
-                      textoParaSobre(25.0, 165.0, (Icons.filter_4), "Alerts"),
+                      textoParaSobre(25.0, 300.0, (Icons.filter_4), "Alerts"),
                       SizedBox(height: 5),
-                      textoParaSobre(25.0, 165.0, (Icons.filter_5), "Botões"),
+                      textoParaSobre(25.0, 300.0, (Icons.filter_5), "Botões"),
                       SizedBox(height: 5),
-                      textoParaSobre(25.0, 165.0, (Icons.filter_6), "Caixas Texto"),
+                      textoParaSobre(25.0, 300.0, (Icons.filter_6), "Caixas Texto"),
                     ],
                   ),
                 ],

@@ -14,6 +14,7 @@ const ComprarPassagem({
     this.origem, 
     this.destino, 
     this.valor,
+    this.tipo
  });
 
    final int idCliente;
@@ -22,6 +23,7 @@ const ComprarPassagem({
    final String origem;
    final String destino;
    final String valor;
+   final String tipo;
     
 
   @override
@@ -52,7 +54,8 @@ void verificarSelecionado(int index){
                             data: widget.data,
                             origem: widget.origem,
                             destino: widget.destino,
-                            valor: widget.valor);
+                            valor: widget.valor,
+                            tipo: widget.tipo,);
                             _indexAtual = index; 
                     }
       );     
@@ -64,7 +67,8 @@ void verificarSelecionado(int index){
                        data: widget.data,
                        origem: widget.origem,
                        destino: widget.destino,
-                       valor: widget.valor);
+                       valor: widget.valor,
+                       tipo: widget.tipo,);
                        _indexAtual = index;
                     });
       break;
@@ -75,7 +79,8 @@ void verificarSelecionado(int index){
                         data: widget.data,
                         origem: widget.origem,
                         destino: widget.destino,
-                        valor: widget.valor);
+                        valor: widget.valor,
+                        tipo: widget.tipo);
                         _indexAtual = index;
                     });
       break;      
@@ -146,10 +151,8 @@ void verificarSelecionado(int index){
              ),
             ],
           ),
-        ),
-            
-        atual,
-          
+        ),            
+        atual,         
         ],
         ),
       ),
