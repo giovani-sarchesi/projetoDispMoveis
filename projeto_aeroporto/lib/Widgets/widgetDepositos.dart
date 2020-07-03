@@ -1,7 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:projeto_aeroporto/Classes/classes.dart';
 import 'package:projeto_aeroporto/Telas/confirmaCompra.dart';
-import 'package:projeto_aeroporto/main.dart';
 
 class Deposito extends StatefulWidget {
 const Deposito({
@@ -14,8 +13,8 @@ const Deposito({
   this.tipo
  });
 
-   final int idCliente;
-   final int idViagem;
+   final String idCliente;
+   final String idViagem;
    final String data;
    final String origem;
    final String destino;
@@ -28,17 +27,33 @@ const Deposito({
 
 class _DepositoState extends State<Deposito> {
 
-comprarPassagem(){
-  listaTodasPassagens.add(Passagem((Icons.assignment_late),
-                                  listaTodasPassagens.length + 1,
-                                  widget.idCliente,
-                                  widget.idViagem,
-                                  widget.data,
-                                  widget.origem,
-                                  widget.destino,
-                                  widget.valor,
-                                  "Aguardando depósito",
-                                  widget.tipo));
+final db= Firestore.instance;
+bool realizandoCompra = false;
+
+comprarPassagem() async {
+  await db.collection("Passagens").add({
+    "idCliente": widget.idCliente,
+    "idViagem": widget.idViagem,
+    "data": widget.data,
+    "origem": widget.origem,
+    "destino": widget.destino,
+    "valor": widget.valor,
+    "status": "Aguardando depósito bancário",
+    "tipo": widget.tipo
+  });
+
+  DocumentSnapshot viagem = await db.collection("Viagens").document(widget.idViagem).get();
+  var qtdeAtual;
+
+  setState(() {
+    qtdeAtual = viagem.data["qtdePassagem"];
+  });
+
+  await db.collection("Viagens")
+          .document(widget.idViagem)
+          .updateData({
+            "qtdePassagem": qtdeAtual - 1, 
+          });
 
   Navigator.push(context, 
                 MaterialPageRoute(builder: (context) => ConfirmaCompra(idCliente: widget.idCliente,
@@ -88,12 +103,34 @@ comprarPassagem(){
                           ],
                         ),
                         SizedBox(height: 8),
+                        realizandoCompra? 
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 25,
+                                  width: 25,
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlue[300]),
+                                  )
+                                ),
+                                Text("Finalizando compra",
+                                  textScaleFactor: 0.75,
+                                  style: TextStyle(
+                                    color: Colors.lightBlue[300],
+                                    fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                            ) :
                         SizedBox(
                         height: 25,
                         width: 120,
                         child: RaisedButton(
                           child: Text("Fazer pedido"),
                           onPressed: (){
+                            setState(() {
+                              realizandoCompra = !realizandoCompra;
+                            });
                             comprarPassagem();
                           }, 
                           shape: new RoundedRectangleBorder(

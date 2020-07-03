@@ -18,13 +18,20 @@ textoComum(altura, editavel, icone, label, controle){
       );
 }
 
-textoParaData(largura, altura, editavel, icone, label, controle){
+textoParaData(largura, altura, editavel, icone, label, controle, tamanho){
  return SizedBox(
         height: altura,
         width: largura,
         child: TextFormField(
         enabled: editavel,
         keyboardType: TextInputType.datetime,
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(tamanho),
+          MaskedTextInputFormatterShifter(
+            maskONE: "XX/XX",
+            maskTWO: "XX/XX/XXXX", 
+          )
+        ],
         decoration: InputDecoration(
             prefixIcon: Icon(icone),
             border: OutlineInputBorder(),
@@ -35,15 +42,14 @@ textoParaData(largura, altura, editavel, icone, label, controle){
       );
 }
 
-textoParaCPF(altura, editavel, icone, label, controle){
+textoParaCPF(altura, editavel, icone, label, controle, tamanho){
  return SizedBox(
         height: altura,
         child: TextFormField(
         enabled: editavel,
         keyboardType: TextInputType.number,
         inputFormatters: [
-        LengthLimitingTextInputFormatter(11),
-        WhitelistingTextInputFormatter.digitsOnly,  
+        LengthLimitingTextInputFormatter(tamanho),
         MaskedTextInputFormatterShifter(
             maskONE: "XXX.XXX.XXX-XX",
             maskTWO: "XX.XXX.XXX/XXXX-XX"

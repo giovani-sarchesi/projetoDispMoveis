@@ -8,7 +8,7 @@ const ConfirmaCompra({
 });
 
   final String mensagem;
-  final int idCliente;
+  final String idCliente;
   @override
   State<StatefulWidget> createState() => new _ConfirmaCompraState();
 }

@@ -48,7 +48,7 @@ class _SobreState extends State<Sobre> {
         body: TabBarView(children: <Widget>[
           TemaObjetivo(),
           SingleChildScrollView(
-                      child: Column(
+              child: Column(
               children: [
                 SobreGiovani(),
                 SobreKaue(),

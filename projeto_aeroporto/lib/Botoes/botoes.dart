@@ -44,7 +44,7 @@ botaoIrCadastrar(BuildContext context, Botao botao){
   );
 }
 
-botaoIrMenu(BuildContext context, Botao botao, int id){
+botaoIrMenu(BuildContext context, Botao botao, String id){
   return SizedBox(
          height: 30,
          width: 120,

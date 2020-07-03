@@ -17,8 +17,8 @@ const ComprarPassagem({
     this.tipo
  });
 
-   final int idCliente;
-   final int idViagem;
+   final String idCliente;
+   final String idViagem;
    final String data;
    final String origem;
    final String destino;
@@ -127,7 +127,7 @@ void verificarSelecionado(int index){
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                      textoParaData(165.0, 35.0, false, (Icons.calendar_today), widget.data, data),                  
+                      textoParaData(165.0, 35.0, false, (Icons.calendar_today), widget.data, data, 10),                  
                     SizedBox(
                     height: 35,
                     width: 100,

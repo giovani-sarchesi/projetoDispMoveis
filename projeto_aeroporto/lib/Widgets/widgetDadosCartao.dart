@@ -1,10 +1,7 @@
-import 'package:date_format/date_format.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:projeto_aeroporto/CaixasTexto/caixasTexto.dart';
-import 'package:projeto_aeroporto/Classes/classes.dart';
 import 'package:projeto_aeroporto/Telas/confirmaCompra.dart';
-import 'package:projeto_aeroporto/main.dart';
 import 'dart:ui';
 
 
@@ -19,8 +16,8 @@ const DadosCartao({
     this.tipo
  });
 
-   final int idCliente;
-   final int idViagem;
+   final String idCliente;
+   final String idViagem;
    final String data;
    final String origem;
    final String destino;
@@ -32,9 +29,11 @@ const DadosCartao({
 
 class _DadosCartaoState extends State<DadosCartao> {
 
+final db = Firestore.instance;
+
 verificarDados(String nomeCompleto, String cpfTitular, String nroCartao, String cvv, String validade){
 
-   if(nomeCompleto.isEmpty || nroCartao.isEmpty || cvv.isEmpty || validade.isEmpty || validade == "Validade"){
+   if(nomeCompleto.isEmpty || nroCartao.isEmpty || cvv.isEmpty || validade.isEmpty){
       return setState(() {
         textoInfoCartao = "Todos os dados são obrigatórios";
         iconeInfoCartao = (Icons.warning);
@@ -52,7 +51,7 @@ verificarDados(String nomeCompleto, String cpfTitular, String nroCartao, String 
       });
    }
 
-   if(cpfTitular.length < 11){
+   if(cpfTitular.length < 14){
      return setState(() {
         textoInfoCartao = "CPF informado é inválido";
         iconeInfoCartao = (Icons.warning);
@@ -71,17 +70,30 @@ verificarDados(String nomeCompleto, String cpfTitular, String nroCartao, String 
   
 }
 
-confirmarCompra(){
-  listaTodasPassagens.add(Passagem((Icons.assignment_turned_in),
-                                  listaTodasPassagens.length + 1,
-                                  widget.idCliente,
-                                  widget.idViagem,
-                                  widget.data,
-                                  widget.origem,
-                                  widget.destino,
-                                  widget.valor,
-                                  "Paga",
-                                  widget.tipo));
+confirmarCompra() async {
+  await db.collection("Passagens").add({
+    "idCliente": widget.idCliente,
+    "idViagem": widget.idViagem,
+    "data": widget.data,
+    "origem": widget.origem,
+    "destino": widget.destino,
+    "valor": widget.valor,
+    "status": "Pagamento confirmado",
+    "tipo": widget.tipo
+  });
+
+  DocumentSnapshot viagem = await db.collection("Viagens").document(widget.idViagem).get();
+  var qtdeAtual;
+
+  setState(() {
+    qtdeAtual = viagem.data["qtdePassagem"];
+  });
+
+  await db.collection("Viagens")
+          .document(widget.idViagem)
+          .updateData({
+            "qtdePassagem": qtdeAtual - 1, 
+          });
 
   Navigator.push(context, 
                 MaterialPageRoute(builder: (context) => ConfirmaCompra(idCliente: widget.idCliente,
@@ -95,11 +107,12 @@ TextEditingController nomeCompleto = TextEditingController();
 TextEditingController cpfTitular = TextEditingController();
 TextEditingController nroCartao = TextEditingController();
 TextEditingController cvv = TextEditingController();
-dynamic validade = "Validade";
+TextEditingController validade = TextEditingController();
 dynamic iconeInfoCartao = (Icons.info);
 dynamic textoInfoCartao = "Informe os dados do cartão";
 dynamic corInfoCartao = Colors.grey;
 bool liberaBotao = true;
+bool realizandoCompra = false;
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +138,7 @@ bool liberaBotao = true;
                   SizedBox(height: 8),
                   textoComum(35.0, true, (Icons.rate_review), "Nome Titular Cartão", nomeCompleto),                  
                   SizedBox(height: 8),
-                  textoParaCPF(35.0, true, (Icons.featured_video), "CPF Titular do Cartão", cpfTitular),
+                  textoParaCPF(35.0, true, (Icons.featured_video), "CPF Titular do Cartão", cpfTitular, 14),
                   SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -138,35 +151,7 @@ bool liberaBotao = true;
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                          icon: Icon(Icons.calendar_today,
-                                    color: Colors.grey),
-                          onPressed:() async {
-                              DatePicker.showDatePicker(
-                              context,
-                              showTitleActions: true, 
-                              minTime: DateTime.now(), 
-                              maxTime: DateTime(2100),
-                              locale: LocaleType.pt,
-                              onConfirm: (date){
-                                setState(() {
-                                  validade = '${formatDate(date, [mm, '/', yyyy ])}';
-                                });
-                              },
-                            );                
-                        }
-                      ),
-                      SizedBox(
-                      height: 35,
-                      width: 120,
-                      child: TextFormField(
-                        enabled: false,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: validade,
-                        ),
-                      ),
-                    ),
+                    textoParaData(165.0, 35.0, true, (Icons.today), "Validade", validade, 5),                      
                     SizedBox(
                       height: 35,
                       width: 100,
@@ -212,12 +197,34 @@ bool liberaBotao = true;
                     ),
                   ),
                   SizedBox(height: 8),
-                  SizedBox(
+                  realizandoCompra? 
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 25,
+                                  width: 25,
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlue[300]),
+                                  )
+                                ),
+                                Text("Finalizando compra",
+                                  textScaleFactor: 0.75,
+                                  style: TextStyle(
+                                    color: Colors.lightBlue[300],
+                                    fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                            ) :
+                            SizedBox(
                               height: 25,
                               width: 150,
                               child: RaisedButton(
                                 child: Text("Confirmar Compra"),
                                 onPressed: liberaBotao ? null : (){
+                                    setState(() {
+                                      realizandoCompra = !realizandoCompra;
+                                    });
                                     confirmarCompra();
                                 }, 
                                 shape: new RoundedRectangleBorder(
@@ -225,7 +232,7 @@ bool liberaBotao = true;
                                 ),
                                 color: Colors.lightBlue[300],
                               ),
-                            ),
+                            )
                 ],
               ),
     );

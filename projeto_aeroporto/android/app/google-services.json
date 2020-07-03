@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "298648666404",
+    "firebase_url": "https://app-gkaeroporto.firebaseio.com",
+    "project_id": "app-gkaeroporto",
+    "storage_bucket": "app-gkaeroporto.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:298648666404:android:6d840daa0c3c1cd7b4f3b1",
+        "android_client_info": {
+          "package_name": "com.example.projeto_aeroporto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "298648666404-pskktrtiakgcjk88v1upr400gjlq33f8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAe2MQENJLzypo1-cS3EciOqC3a8g05pHs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "298648666404-pskktrtiakgcjk88v1upr400gjlq33f8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

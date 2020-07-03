@@ -1,10 +1,11 @@
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto_aeroporto/Alerts/alerts.dart';
 import 'package:projeto_aeroporto/Botoes/botoes.dart';
 import 'package:projeto_aeroporto/CaixasTexto/caixasTexto.dart';
 import 'package:projeto_aeroporto/Classes/classes.dart';
-import 'package:projeto_aeroporto/Listas/listaPassagens.dart';
-import 'package:projeto_aeroporto/Listas/listaViagens.dart';
+import 'package:projeto_aeroporto/Telas/compraPassagem.dart';
 import 'package:projeto_aeroporto/Telas/telaInicial.dart';
 import 'package:projeto_aeroporto/main.dart';
 
@@ -13,40 +14,24 @@ const MenuApp({
    this.idCliente,
 });
 
-  final int idCliente;
+  final String idCliente;
   @override
   _MenuAppState createState() => _MenuAppState();
 }
 
 class _MenuAppState extends State<MenuApp> {
 
+var db = Firestore.instance;
+final String colecao = "Viagens";
+final String passagens = "Passagens";
+StreamSubscription<QuerySnapshot> listen;
 Widget lista;
 var indicador = "Todas";
+var iconeSelecionado = Icons.card_travel;
 bool tipoFiltro = true;
-var corTodas = Colors.white;
-var corVoos = Colors.black;
-var corOnibus = Colors.black;
-var corCruzeiro = Colors.black;
-var corPassagens = Colors.black;
-
-verificaPassagens(){
-  if(listaPassagensUsuario.length == 0){
-    return alertInformativo(context, 
-                            "Você ainda não comprou nenhuma passagem :/", 
-                            "",
-                            botaoFecharAlert(context, new Botao((Icons.check_circle), "Voltar")));
-  }
-  else{
-    corTodas = Colors.black;
-    corVoos = Colors.black;
-    corOnibus = Colors.black;
-    corCruzeiro = Colors.black;
-    corPassagens = Colors.white;
-    return lista = ListaPassagens();
-  }
-}
 
 realizarFiltroViagens(String filtroOrigem, String filtroDestino, String tipoViagem){
+   int tipoFiltro;
    if(filtroOrigem.isEmpty && filtroDestino.isEmpty){
     return alertInformativo(context, 
                       "Impossível filtrar.", 
@@ -54,301 +39,322 @@ realizarFiltroViagens(String filtroOrigem, String filtroDestino, String tipoViag
                       botaoFecharAlert(context, new Botao(Icons.keyboard_return, "Voltar"))
                      );
    }
-
-   if(tipoViagem != "Todas"){
-      listaSelecionada = listaViagens.where((element) => element.tipoViagem == tipoViagem).toList();
+   
+   if(filtroOrigem.isNotEmpty && filtroDestino.isEmpty){
+     tipoFiltro = 1;
+   }
+   else if(filtroOrigem.isEmpty && filtroDestino.isNotEmpty){
+     tipoFiltro = 2;
    }
    else{
-     listaSelecionada = listaViagens.toList();
+     tipoFiltro = 3;
    }
 
-   if(filtroDestino.isEmpty && filtroOrigem.isNotEmpty){
-      setState(() {       
-       listaSelecionada = listaSelecionada.where((element) => element.origem.toUpperCase().contains(filtroOrigem.toUpperCase())).toList();
-       if(listaSelecionada.length == 0){
-         return alertInformativo(context, 
-                      "Nenhuma viagem encontrada.", 
-                      "Desculpe, mas nenhuma viagem tem como origem a cidade de $filtroOrigem do tipo $tipoViagem", 
-                      botaoFecharAlert(context, new Botao(Icons.keyboard_return, "Voltar"))
-                     );
-       }
-       return lista = ListaViagens(idCliente: widget.idCliente);
-      });
-   }
+   if(tipoViagem != "Todas"){
+      switch(tipoFiltro){
+        case 1:
+          listen = db.collection(colecao).snapshots().listen((res) { 
+            setState((){
+            listaSelecionada = res.documents.
+                           map((doc) => Viagens.fromMap(doc.data, doc.documentID))
+                           .where((element) => element.tipoViagem == tipoViagem)
+                           .where((element) => element.origem.toUpperCase().contains(filtroOrigem.toUpperCase()))
+                           .where((element) => element.qtdePassagem > 0)
+                           .toList();
+            });
+          });
+          break;
 
-   if(filtroOrigem.isEmpty && filtroDestino.isNotEmpty){
-      setState(() {
-       listaSelecionada = listaSelecionada.where((element) => element.destino.toUpperCase().contains(filtroDestino.toUpperCase())).toList();
-       if(listaSelecionada.length == 0){
-         return alertInformativo(context, 
-                      "Nenhuma viagem encontrada.", 
-                      "Desculpe, mas nenhuma viagem tem como destino a cidade de $filtroDestino.", 
-                      botaoFecharAlert(context, new Botao(Icons.keyboard_return, "Voltar"))
-                     );
-       }
-       return lista = ListaViagens(idCliente: widget.idCliente);
-      });
-   }
+        case 2:
+          listen = db.collection(colecao).snapshots().listen((res) { 
+            setState((){
+            listaSelecionada = res.documents.
+                           map((doc) => Viagens.fromMap(doc.data, doc.documentID))
+                           .where((element) => element.tipoViagem == tipoViagem)
+                           .where((element) => element.destino.toUpperCase().contains(filtroDestino.toUpperCase()))
+                           .where((element) => element.qtdePassagem > 0)
+                           .toList();
+            });
+          });
+          break;
+        
+        case 3:
+          listen = db.collection(colecao).snapshots().listen((res) { 
+            setState((){
+            listaSelecionada = res.documents.
+                           map((doc) => Viagens.fromMap(doc.data, doc.documentID))
+                           .where((element) => element.tipoViagem == tipoViagem)
+                           .where((element) => element.origem.toUpperCase().contains(filtroOrigem.toUpperCase()))
+                           .where((element) => element.destino.toUpperCase().contains(filtroDestino.toUpperCase()))
+                           .where((element) => element.qtdePassagem > 0)
+                           .toList();
+            });
+          });
+      }
+    }
+    else{
+     switch(tipoFiltro){
+        case 1:
+          listen = db.collection(colecao).snapshots().listen((res) { 
+            setState((){
+            listaSelecionada = res.documents.
+                           map((doc) => Viagens.fromMap(doc.data, doc.documentID))
+                           .where((element) => element.origem.toUpperCase().contains(filtroOrigem.toUpperCase()))
+                           .where((element) => element.qtdePassagem > 0)
+                           .toList();
+            });
+          });
+          break;
 
-   if(filtroOrigem.isNotEmpty && filtroDestino.isNotEmpty){
-     setState(() {
-       listaSelecionada = listaSelecionada.where((element) => element.destino.toUpperCase().contains(filtroDestino.toUpperCase()) && 
-                                                              element.origem.toUpperCase().contains(filtroOrigem.toUpperCase())).toList();
-       if(listaSelecionada.length == 0){
-         return alertInformativo(context, 
-                      "Nenhuma viagem encontrada.", 
-                      "Desculpe, mas nenhuma viagem tem como origem de $filtroOrigem e o destino de $filtroDestino.", 
-                      botaoFecharAlert(context, new Botao(Icons.keyboard_return, "Voltar"))
-                     );
-       }
-       return lista = ListaViagens(idCliente: widget.idCliente);
-      });
-   }
+        case 2:
+          listen = db.collection(colecao).snapshots().listen((res) { 
+            setState((){
+            listaSelecionada = res.documents.
+                           map((doc) => Viagens.fromMap(doc.data, doc.documentID))
+                           .where((element) => element.destino.toUpperCase().contains(filtroDestino.toUpperCase()))
+                           .where((element) => element.qtdePassagem > 0)
+                           .toList();
+            });
+          });
+          break;
+        
+        case 3:
+          listen = db.collection(colecao).snapshots().listen((res) { 
+            setState((){
+            listaSelecionada = res.documents.
+                           map((doc) => Viagens.fromMap(doc.data, doc.documentID))
+                           .where((element) => element.origem.toUpperCase().contains(filtroOrigem.toUpperCase()))
+                           .where((element) => element.destino.toUpperCase().contains(filtroDestino.toUpperCase()))
+                           .where((element) => element.qtdePassagem > 0)
+                           .toList();
+            });
+          });
+      }
+    }
 }
 
-realizarFiltroPassagens(String origem, String destino){
-  if(origem.isEmpty && destino.isEmpty){
-    return alertInformativo(context, 
-                      "Impossível filtrar.", 
-                      "Pelo menos um dos filtros devem ser informados.", 
-                      botaoFecharAlert(context, new Botao(Icons.keyboard_return, "Voltar"))
-                     );
+trocaLista(String tipoViagem){
+  if(tipoViagem == "Todas"){
+  listen = db.collection(colecao).snapshots().listen((res) { 
+                          setState((){
+                            listaSelecionada = res.documents.
+                                               map((doc) => Viagens.fromMap(doc.data, doc.documentID))
+                                               .where((element) => element.qtdePassagem > 0)
+                                               .toList();
+                          });
+                        });
   }
-
-  listaPassagensUsuario = listaTodasPassagens.where((element) => element.idPassageiro == widget.idCliente).toList();
-
-  if(destino.isEmpty && origem.isNotEmpty){
-      setState(() {       
-       listaPassagensUsuario = listaPassagensUsuario.where((element) => element.origem.toUpperCase().contains(origem.toUpperCase())).toList();
-       if(listaPassagensUsuario.length == 0){
-         return alertInformativo(context, 
-                      "Nenhuma passagem encontrada.", 
-                      "Você não comprou nenhuma passagem com origem de $origem.", 
-                      botaoFecharAlert(context, new Botao(Icons.keyboard_return, "Voltar"))
-                     );
-       }
-       return lista = ListaPassagens();
-      });
+  else{
+  listen = db.collection(colecao).snapshots().listen((res) { 
+                          setState((){
+                          listaSelecionada = res.documents.
+                             map((doc) => Viagens.fromMap(doc.data, doc.documentID))
+                             .where((element) => element.tipoViagem == indicador)
+                             .where((element) => element.qtdePassagem > 0)
+                             .toList();
+                          });
+                        });
   }
+}
 
-   if(origem.isEmpty && destino.isNotEmpty){
-      setState(() {       
-       listaPassagensUsuario = listaPassagensUsuario.where((element) => element.destino.toUpperCase().contains(destino.toUpperCase())).toList();
-       if(listaPassagensUsuario.length == 0){
-         return alertInformativo(context, 
-                      "Nenhuma passagem encontrada.", 
-                      "Você não comprou nenhuma passagem com destino para $destino.", 
-                      botaoFecharAlert(context, new Botao(Icons.keyboard_return, "Voltar"))
-                     );
-       }
-       return lista = ListaPassagens();
-      });
-   }
+iconeTipo(String tipo){
+    switch (tipo) {
+      case "Voo":
+        return Icons.flight_takeoff;
+        break;
+      case "Onibus":
+        return Icons.directions_bus;
+        break;
+      case "Cruzeiro":
+        return Icons.directions_boat;
+        break;
+      }
+    }
 
-   if(origem.isNotEmpty && destino.isNotEmpty){
-     setState(() {
-       listaPassagensUsuario = listaPassagensUsuario.where((element) => element.destino.toUpperCase().contains(destino.toUpperCase()) && 
-                                                                        element.origem.toUpperCase().contains(origem.toUpperCase())).toList();
-       if(listaPassagensUsuario.length == 0){
-         return alertInformativo(context, 
-                      "Nenhuma viagem encontrada.", 
-                      "Você ainda não comprou nenhuma viagem com origem de $origem para $destino.", 
-                      botaoFecharAlert(context, new Botao(Icons.keyboard_return, "Voltar"))
-                     );
-       }
-       return lista = ListaPassagens();
-      });
-   }
+qtdeDisponivel(int qtde){
+      if(qtde <= 10){
+        return Colors.red;
+      }
+      if(qtde <= 25){
+        return Colors.yellow[600];
+      }
+      else{
+        return Colors.green;
+      }
+    }
+
+padroesStatus(String status){
+    if(status == "Pagamento confirmado"){
+      return Colors.green;
+    }
+    else{
+      return Colors.red;
+    }
 }
 
 @override void initState(){
   super.initState();
-  setState(() {
-    listaSelecionada = listaViagens;
-    lista = ListaViagens(idCliente: widget.idCliente,);
+  listen?.cancel();
+
+  listen = db.collection(colecao).snapshots().listen((res) { 
+    setState((){
+      listaSelecionada = res.documents.
+                         map((doc) => Viagens.fromMap(doc.data, doc.documentID))
+                         .where((element) => element.qtdePassagem > 0)
+                         .toList();
+    });
+  });
+
+  listen = db.collection(passagens).snapshots().listen((res) { 
+                          setState((){
+                          listaPassagensUsuario = res.documents.
+                             map((doc) => Passagem.fromMap(doc.data, doc.documentID))
+                             .where((element) => element.idCliente == widget.idCliente)
+                             .toList();
+                    
+    });
   });
 }
 
-@override Widget build(BuildContext context) {
-    if(indicador == "Passagens"){
-      tipoFiltro = false;
-    }
-    else{
-      tipoFiltro = true;
-    }
+ @override
+  void dispose() {
+    listen?.cancel();
+    super.dispose();
+  }
 
-    listaPassagensUsuario = listaTodasPassagens.where((element) => element.idPassageiro == widget.idCliente).toList();
+
+@override Widget build(BuildContext context) {
+GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
     TextEditingController txtOrigem = TextEditingController();
     TextEditingController txtDestino = TextEditingController();
 
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          appBar: AppBar(
-            title: Text("Menu"),
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: Text("Menu"),
+          leading: IconButton(
+            icon: Icon(Icons.style),
+            onPressed: (){
+              _scaffoldKey.currentState.openEndDrawer();
+            },
+          ),
             centerTitle: true,
             actions: [
               IconButton(icon: Icon(Icons.exit_to_app), 
-                         onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => TelaInicial()));
-                         }
+                onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => TelaInicial()));
+                }
               ),
             ],
           ),
       body: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: <Widget>[
-            new SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-                  child: new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,      
-                  children: <Widget>[
-                    SizedBox(height: 40, width: 120,
-                      child: RaisedButton.icon(
-                      onPressed: () {setState(() {
-                        corTodas = Colors.white;
-                        corVoos = Colors.black;
-                        corOnibus = Colors.black;
-                        corCruzeiro = Colors.black;
-                        corPassagens = Colors.black;
-                        listaSelecionada = listaViagens;
-                        indicador = "Todas";
-                        lista = ListaViagens(idCliente: widget.idCliente);
-                      });}, 
-                      icon: Icon(Icons.blur_on, 
-                                 size: 30, 
-                                 color: corTodas), 
-                      label:Text('Todas', 
-                                 textScaleFactor: 0.75, 
-                                 style: TextStyle(
-                                   color: corTodas),
-                                ),
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(1000.0),
-                      ),
-                      color: Colors.lightBlue[300],
-                    ),
-                   ),
-                   SizedBox(width: 5),
-                   SizedBox(height: 40, width: 120,
-                      child: RaisedButton.icon(
-                      onPressed: () {setState(() {
-                        corTodas = Colors.black;
-                        corVoos = Colors.white;
-                        corOnibus = Colors.black;
-                        corCruzeiro = Colors.black;
-                        corPassagens = Colors.black;
-                        listaSelecionada = listaViagens.where((element) => element.tipoViagem == "Voo").toList();
-                        indicador = "Voo";
-                        lista = ListaViagens(idCliente: widget.idCliente);
-                      });}, 
-                      icon: Icon(Icons.flight_takeoff, 
-                                 size: 30,
-                                 color: corVoos), 
-                      label:Text('Vôos', 
-                                 textScaleFactor: 0.75,
-                                 style: TextStyle(
-                                   color: corVoos),
-                                ),
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(1000.0),
-                      ),
-                      color: Colors.lightBlue[300],
-                    ),
-                   ),
-                   SizedBox(width: 5),
-                   SizedBox(height: 40, width: 120,
-                      child: RaisedButton.icon(
-                      onPressed: () {setState(() {
-                        corTodas = Colors.black;
-                       corVoos = Colors.black;
-                       corOnibus = Colors.white;
-                       corCruzeiro = Colors.black;
-                       corPassagens = Colors.black;
-                        listaSelecionada = listaViagens.where((element) => element.tipoViagem == "Onibus").toList();
-                        indicador = "Onibus";
-                        lista = ListaViagens(idCliente: widget.idCliente);
-                      });},
-                      icon: Icon(Icons.directions_bus, 
-                                 size: 30,
-                                 color: corOnibus,), 
-                      label:Text('Ônibus', 
-                                 textScaleFactor: 0.75,
-                                 style: TextStyle(
-                                   color: corOnibus),
-                                ),
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(1000.0),
-                      ),
-                      color: Colors.lightBlue[300],
-                      ),
-                   ),
-                   SizedBox(width: 5),
-                   SizedBox(height: 40, width: 120,
-                   child: RaisedButton.icon(
-                     onPressed: () {setState(() {
-                       corTodas = Colors.black;
-                       corVoos = Colors.black;
-                       corOnibus = Colors.black;
-                       corCruzeiro = Colors.white;
-                       corPassagens = Colors.black;
-                       listaSelecionada = listaViagens.where((element) => element.tipoViagem == "Cruzeiro").toList();
-                       indicador = "Cruzeiro";
-                       lista = ListaViagens(idCliente: widget.idCliente);
-                     });},
-                     icon: Icon(Icons.directions_boat, 
-                                size: 30,
-                                color: corCruzeiro), 
-                     label:Text('Cruzeiros', 
-                                textScaleFactor: 0.75,
-                                style: TextStyle(
-                                  color: corCruzeiro),
-                                ),
-                     shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(1000.0),
-                     ),
-                     color: Colors.lightBlue[300],
-                     ),
-                   ),
-                   SizedBox(width: 5),
-                   SizedBox(height: 40, width: 120,
-                   child: RaisedButton.icon(
-                     onPressed: (){setState(() {
-                       indicador = "Passagens";
-                       verificaPassagens();
-                     });},
-                     icon: Icon(Icons.style, 
-                                size: 30,
-                                color: corPassagens,
-                               ), 
-                     label:Text('Minhas\nPassagens', 
-                                textScaleFactor: 0.75,
-                                style: TextStyle(
-                                 color: corPassagens),
-                              ),
-                     shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(1000.0),
-                     ),
-                     color: Colors.lightBlue[300],
-                    ),
+      padding: EdgeInsets.all(10),
+      child: Column(
+      children: <Widget>[
+        new SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+              child: new Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,      
+              children: <Widget>[
+                SizedBox(height: 40, width: 120,
+                  child: RaisedButton.icon(
+                  onPressed: () {setState(() {
+                    indicador = "Todas";
+                    iconeSelecionado = Icons.card_travel;
+                    trocaLista(indicador);
+                  });}, 
+                  icon: Icon(Icons.card_travel, 
+                             size: 30), 
+                  label:Text('Todas', 
+                             textScaleFactor: 0.75),
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(1000.0),
                   ),
-                  SizedBox(width: 5),
-                 ],
+                  color: Colors.lightBlue[300],
                 ),
-              ),
-              SizedBox(height: 5),
-              Container(
-                  margin: EdgeInsets.all(5.0),
-                  padding: EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: 
-                              Colors.lightBlue[300],
-                              ),
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+               ),
+               SizedBox(width: 5),
+               SizedBox(height: 40, width: 120,
+                  child: RaisedButton.icon(
+                  onPressed: () {setState(() {
+                    indicador = "Voo";
+                    iconeSelecionado = Icons.flight_takeoff;
+                    trocaLista(indicador);
+                    });
+                  }, 
+                  icon: Icon(Icons.flight_takeoff, 
+                             size: 30), 
+                  label:Text('Vôos', 
+                             textScaleFactor: 0.75,
+                            ),
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(1000.0),
                   ),
-                  child: Column(
+                  color: Colors.lightBlue[300],
+                ),
+               ),
+               SizedBox(width: 5),
+               SizedBox(height: 40, width: 120,
+                  child: RaisedButton.icon(
+                  onPressed: () {setState(() {
+                    indicador = "Onibus";
+                    iconeSelecionado = Icons.directions_bus;
+                    trocaLista(indicador);
+                    });
+                  },
+                  icon: Icon(Icons.directions_bus, 
+                             size: 30,), 
+                  label:Text('Ônibus', 
+                             textScaleFactor: 0.75,
+                            ),
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(1000.0),
+                  ),
+                  color: Colors.lightBlue[300],
+                  ),
+               ),
+               SizedBox(width: 5),
+               SizedBox(height: 40, width: 120,
+               child: RaisedButton.icon(
+                 onPressed: () {setState(() {
+                   indicador = "Cruzeiro";
+                   iconeSelecionado = Icons.directions_boat;
+                   trocaLista(indicador);
+                   });
+                },
+                 icon: Icon(Icons.directions_boat, 
+                            size: 30), 
+                 label:Text('Cruzeiros', 
+                            textScaleFactor: 0.75,
+                            ),
+                 shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(1000.0),
+                 ),
+                 color: Colors.lightBlue[300],
+                 ),
+               ),
+               SizedBox(width: 5),
+             ],
+            ),
+          ),
+          SizedBox(height: 5),
+          Container(
+              margin: EdgeInsets.all(5.0),
+              padding: EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: 
+                          Colors.lightBlue[300],
+                          ),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text("Pesquisar viagem",
                          textScaleFactor: 1.5,
@@ -356,35 +362,253 @@ realizarFiltroPassagens(String origem, String destino){
                                 color: Colors.lightBlue[300],
                                 fontWeight: FontWeight.bold)
                       ),
-                      SizedBox(height: 8),
-                      textoComum(35.0, true, Icons.my_location, "Origem", txtOrigem),
-                      SizedBox(height: 8),
-                      textoComum(35.0, true, Icons.not_listed_location, "Destino", txtDestino),
-                      SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          SizedBox(height: 25, width: 85,
-                            child: RaisedButton.icon(
-                            onPressed: tipoFiltro ? (){realizarFiltroViagens(txtOrigem.text, txtDestino.text, indicador);} :
-                                (){realizarFiltroPassagens(txtOrigem.text, txtDestino.text);},
-                            icon: Icon(Icons.search, size: 17.5), 
-                            label:Text('Filtrar', textScaleFactor: 0.75,),
-                            shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(1000.0),
-                            ),
-                            color: Colors.lightBlue[300],
-                          ),
+                      Icon(iconeSelecionado,
+                           size: 30,)
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  textoComum(35.0, true, Icons.my_location, "Origem", txtOrigem),
+                  SizedBox(height: 8),
+                  textoComum(35.0, true, Icons.not_listed_location, "Destino", txtDestino),
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SizedBox(height: 25, width: 85,
+                        child: RaisedButton.icon(
+                        onPressed: (){
+                          realizarFiltroViagens(txtOrigem.text, txtDestino.text, indicador);
+                        },
+                        icon: Icon(Icons.search, size: 17.5), 
+                        label:Text('Filtrar', textScaleFactor: 0.75,),
+                        shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(1000.0),
                         ),
-                        ],
+                        color: Colors.lightBlue[300],
                       ),
-                    ]
+                    ),
+                    ],
+                  ),
+                ]
+              ),
+            ),
+          StreamBuilder<QuerySnapshot>(
+          stream: db.collection(colecao).snapshots(),
+          builder:(context, snapshot){
+          switch(snapshot.connectionState){
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+            return Center(
+              child: CircularProgressIndicator(
+              backgroundColor: Colors.grey,
+              strokeWidth: 8,
+              )
+            );
+          default:
+            if(listaSelecionada.length == 0){
+              return SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.location_off,
+                        size: 70,
+                        color: Colors.lightBlue[300]
+                    ),
+                    Text("Nenhum viagem encontrada!",
+                        textScaleFactor: 1.25,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.lightBlue[300]
+                        ),
+                    )                        
+                  ],
+                ),
+              );
+            }
+            return Expanded(
+              child: ListView.builder(
+              itemCount: listaSelecionada.length,
+              itemBuilder: (context, index) {
+              return Padding(
+              padding: const EdgeInsets.all(3.0),
+                child: Container(
+                margin: EdgeInsets.all(3.0),
+                padding: EdgeInsets.all(2.5),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: 
+                            Colors.lightBlue[300],
+                            ),
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                ExpansionTile(
+                leading: Icon(iconeTipo(listaSelecionada[index].tipoViagem), size: 55),
+                title: Text('${listaSelecionada[index].origem} - ${listaSelecionada[index].destino}',
+                        style: TextStyle(fontWeight: FontWeight.bold,
+                                         fontSize: 18),
+                        ),
+                subtitle: Text(
+                           'Data: ${listaSelecionada[index].data}\n'
+                           'Valor: ${listaSelecionada[index].valor}',
+                           style: TextStyle(fontSize: 14),
+                      ),
+                trailing: Column(
+                children: [
+                  Text('${listaSelecionada[index].qtdePassagem}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                ),
+                              ),
+                  Icon(Icons.event_seat, 
+                      size: 20,
+                      color: qtdeDisponivel(listaSelecionada[index].qtdePassagem))
+                  ],
+                ),
+            
+              children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SizedBox(
+                  height: 25,
+                  width: 100,
+                  child: RaisedButton.icon(
+                    icon: Icon(Icons.add_shopping_cart , size: 17.5),
+                    onPressed:() { 
+                      Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) => ComprarPassagem( 
+                                                                  idCliente: widget.idCliente,
+                                                                  idViagem: listaSelecionada[index].id, 
+                                                                  data: listaSelecionada[index].data, 
+                                                                  origem: listaSelecionada[index].origem, 
+                                                                  destino: listaSelecionada[index].destino,
+                                                                  valor: listaSelecionada[index].valor,
+                                                                  tipo: listaSelecionada[index].tipoViagem,)
+                                                                  )
+                                                      );
+                                  },
+                    label: Text("Comprar", textScaleFactor: 0.75,),
+                    shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(1000.0),
+                    ),
+                  color: Colors.lightBlue[300],
                   ),
                 ),
-              lista,
-            ],
+                ],
+                )
+              ],),  
+              ],
+            ),),
+            );
+          },),
+        );
+      }}),
+        ],
+      ),
+      ),
+      endDrawer: Drawer(
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Column(
+                children: [
+                SizedBox(height: 20),
+                Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text("Passagens",
+                           textScaleFactor: 3.0,
+                           style: TextStyle(
+                                  color: Colors.lightBlue[300],
+                                  fontWeight: FontWeight.bold)
+                        ),
+                        Icon(Icons.style,
+                             size: 50,
+                             color: Colors.lightBlue[300])
+                      ],
+                    ),
+                SizedBox(height: 20),
+                StreamBuilder<QuerySnapshot>(
+                stream: db.collection(passagens).snapshots(),
+                builder: (context, snapshot){
+                  switch(snapshot.connectionState){
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                      return Center(child: CircularProgressIndicator());
+                    default:
+                      if(listaPassagensUsuario.length == 0){
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.sentiment_dissatisfied,
+                                  size: 45,
+                                  color: Colors.lightBlue[300]
+                              ),
+                              Text("Nenhum passagem encontrada,\n"
+                                   "volte ao menu Viagens e aproveite uma de nossas ofertas!",
+                                  textScaleFactor: 0.75,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.lightBlue[300]
+                                  ),
+                              )                        
+                            ],
+                          ),
+                        );
+                      }
+                      else{
+                      return Expanded(
+                        child: ListView.builder(
+                          itemCount: listaPassagensUsuario.length,
+                          itemBuilder: (context, index){
+                            return Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Container(
+                                margin: EdgeInsets.all(3.0),
+                                padding: EdgeInsets.all(2.5),
+                                decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: 
+                                    Colors.lightBlue[300],
+                                    ),
+                                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                              child: ListTile(
+                              leading: Icon(Icons.assignment_ind, 
+                              color: padroesStatus(listaPassagensUsuario[index].status), 
+                              size: 35),
+
+                          title: Text('Código passagem: ${listaPassagensUsuario[index].idPassagem}\n'
+                                       'Data: ${listaPassagensUsuario[index].data}',
+                            style: TextStyle(fontWeight: FontWeight.bold, 
+                                   fontSize: 15),
+                          ),
+
+                          subtitle: Text('Origem: ${listaPassagensUsuario[index].origem}\nDestino: ${listaPassagensUsuario[index].destino}\nStatus: ${listaPassagensUsuario[index].status}',
+                            style: TextStyle(fontWeight: FontWeight.bold, 
+                                     fontSize: 11)
+                          ),
+
+                          trailing: Icon(iconeTipo(listaPassagensUsuario[index].tipo),
+                                        size: 35,),        
+                          ),
+                        ),);
+                      })
+                    );
+                    }
+                  }
+                }
+              ),
+              ],
+            ),
           ),
-        )
+        ),
       )
     );
   }
